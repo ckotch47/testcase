@@ -2,7 +2,9 @@
 interface body{
     massage: 'success' | 'fail';
     status: 200 | 401 | 500;
-    response: users[]
+    response: {
+        users: users[]
+    }
 }
 
 
