@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
 import {UserEntity} from "../entity/userEntity";
 import {UsersCreateDto} from "../dto/users-create.dto";
 import {UsersUpdateDto} from "../dto/users-update.dto";
@@ -27,16 +27,21 @@ export class UsersService {
                         message: 'not id into base',
                         result: []
                     }
+            }else{
+                return {
+                    message: 'id is not string',
+                    result: []
+                }
+            }
+        else
+            return {
+                message: 'not id into payload',
+                result: []
             }
     };
 
     async createUser(userCreateDTO: UsersCreateDto){
         let temp = new UserEntity()
-        if(!userCreateDTO || !userCreateDTO.name || !userCreateDTO.login || !userCreateDTO.password)
-            return {
-                massage: 'fail, not body',
-                result: []
-            }
         temp.name = userCreateDTO.name;
         temp.password = userCreateDTO.password;
         temp.login = userCreateDTO.login;
@@ -55,29 +60,33 @@ export class UsersService {
     };
 
     async updateUser(userUpdateDto: UsersUpdateDto, params){
-        if(!userUpdateDto || !userUpdateDto.name || !userUpdateDto.password)
-            return {
-                massage: 'false',
-                result: []
-            }
         let temp = await UserEntity.findById(params.id);
-        if(userUpdateDto.name)
-            temp.name = userUpdateDto.name
-        if(userUpdateDto.password)
-            temp.password = userUpdateDto.password
-        return await UserEntity.Save(temp);
+        if(temp) {
+            if (userUpdateDto.name)
+                temp.name = userUpdateDto.name
+            if (userUpdateDto.password)
+                temp.password = userUpdateDto.password
+            try {
+                return await UserEntity.Save(temp);
+            } catch (e) {
+                return false;
+            }
+        }else{
+            throw new NotFoundException();
+        }
     };
 
     async deleteUser(params){
-        if(!params.id || typeof params.id !== "string")
-            return {
-                massage: 'false',
-                result: []
-            }
         if(await UserEntity.Delete(params.id))
             return{
                 massage: 'success',
                 result: true
             }
-    }
+        else{
+            return{
+                massage: 'fail',
+                result: false
+            }
+        }
+    };
 }
