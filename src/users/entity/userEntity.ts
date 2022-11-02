@@ -6,7 +6,7 @@ export class UserEntity {
     password: string;
     name: string;
 
-    private static users = [
+    private static users: UserEntity[] = [
         {
             "id": "6f0cff6d-02b0-4bc6-8b5e-0d4a39c85eb6",
             "login": "John72@hotmail.com",
@@ -128,15 +128,16 @@ export class UserEntity {
             "name": "Giovanny.Ziemann83"
         }
     ]
+
     static async findAll(): Promise<UserEntity[]>{
         return this.users;
     }
 
-    static async findById(ids: string){
+    static async findById(ids: string): Promise<UserEntity>{
         return this.users.find((x:{id: string})=> x.id ===ids)
     }
 
-    static async Save(user: UserEntity){
+    static async Save(user: UserEntity): Promise<UserEntity>{
         if(!user.id) {
             user.id = faker.datatype.uuid();
             this.users.push(user);
@@ -150,11 +151,15 @@ export class UserEntity {
             return this.users[index];
         }
     }
-    static async Delete(ids: string){
+    static async Delete(ids: string): Promise<boolean>{
         try {
             let index = this.users.findIndex((x: {id: string}) => x.id === ids);
-            this.users.splice(index, 1);
-            return true;
+            if(index > -1) {
+                this.users.splice(index, 1);
+                return true;
+            }else{
+                return false;
+            }
         }catch (e) {
             return false;
         }

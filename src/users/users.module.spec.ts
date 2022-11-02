@@ -18,6 +18,6 @@ describe('UsersModule', () => {
     it('should validate the users module', () => {
         expect(usersModule).toBeDefined();
         expect(usersService).toBeDefined();
-        expect(usersController).toBeDefined();
+        expect(usersController).toBeDefined()
     });
 });

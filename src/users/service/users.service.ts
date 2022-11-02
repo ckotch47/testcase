@@ -1,12 +1,13 @@
-import {Injectable, InternalServerErrorException, NotFoundException} from '@nestjs/common';
+import {Injectable,  NotFoundException} from '@nestjs/common';
 import {UserEntity} from "../entity/userEntity";
 import {UsersCreateDto} from "../dto/users-create.dto";
 import {UsersUpdateDto} from "../dto/users-update.dto";
+import {UsersGet_allResponse} from "../response/users-get_all.response";
 
 
 @Injectable()
 export class UsersService {
-    async getAllUsers(): Promise<object> {
+    async getAllUsers(): Promise<UsersGet_allResponse> {
         return {
             message: 'success',
             result: await UserEntity.findAll()
@@ -16,11 +17,11 @@ export class UsersService {
     async getUserById(params): Promise<object>{
         if(params.id)
             if(typeof params.id === 'string') {
-                let temp = await UserEntity.findById(params.id);
+                let temp: UserEntity = await UserEntity.findById(params.id);
                 if (temp)
                     return {
                         message: 'success',
-                        result: temp
+                        result: <UserEntity>temp
                     }
                 else
                     return {
@@ -40,26 +41,26 @@ export class UsersService {
             }
     };
 
-    async createUser(userCreateDTO: UsersCreateDto){
+    async createUser(userCreateDTO: UsersCreateDto): Promise<object>{
         let temp = new UserEntity()
         temp.name = userCreateDTO.name;
         temp.password = userCreateDTO.password;
         temp.login = userCreateDTO.login;
         try{
-            let tmp = await UserEntity.Save(temp);
+            let tmp: UserEntity = await UserEntity.Save(temp);
             return {
-                massage: 'success',
+                message: 'success',
                 result: tmp
             }
         }catch (e){
             return {
-                massage: 'fail save to entity',
+                message: 'fail save to entity',
                 result: []
             }
         }
     };
 
-    async updateUser(userUpdateDto: UsersUpdateDto, params){
+    async updateUser(userUpdateDto: UsersUpdateDto, params): Promise<object | boolean>{
         let temp = await UserEntity.findById(params.id);
         if(temp) {
             if (userUpdateDto.name)
@@ -76,15 +77,15 @@ export class UsersService {
         }
     };
 
-    async deleteUser(params){
+    async deleteUser(params): Promise<object>{
         if(await UserEntity.Delete(params.id))
             return{
-                massage: 'success',
+                message: 'success',
                 result: true
             }
         else{
             return{
-                massage: 'fail',
+                message: 'fail',
                 result: false
             }
         }

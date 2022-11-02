@@ -29,7 +29,7 @@ describe('UsersService', () => {
 
     describe('get all users', ()=>{
         it('should return all users', async ()=>{
-            let findAll: jest.SpyInstance = jest.spyOn(UserEntity as any,'findAll');
+            const findAll: jest.SpyInstance = jest.spyOn(UserEntity as any,'findAll');
             findAll.mockReturnValue(Promise.resolve([
                 {
                     id:'user_id',
@@ -66,7 +66,7 @@ describe('UsersService', () => {
     })
 
     describe('get user by id', ()=>{
-        let findById: jest.SpyInstance = jest.spyOn(UserEntity as any, 'findById');
+        const findById: jest.SpyInstance = jest.spyOn(UserEntity as any, 'findById');
         it('should return user by id', async ()=>{
 
             findById.mockReturnValue({
@@ -131,7 +131,7 @@ describe('UsersService', () => {
             let temp = await usersService.createUser(newUser);
             expect(saveUser).lastCalledWith(newUser);
             expect(temp).toEqual({
-                massage: 'success',
+                message: 'success',
                 result: {
                     id: 'new_id',
                     name: 'new_user',
@@ -147,15 +147,15 @@ describe('UsersService', () => {
             });
             let temp = await usersService.createUser(newUser);
             expect(temp).toEqual({
-                massage: 'fail save to entity',
+                message: 'fail save to entity',
                 result: []
             });
         });
     });
 
     describe('update user',  () => {
-        let findById: jest.SpyInstance = jest.spyOn(UserEntity as any, 'findById');
-        let saveUser: jest.SpyInstance = jest.spyOn(UserEntity as any, 'Save');
+        const findById: jest.SpyInstance = jest.spyOn(UserEntity as any, 'findById');
+        const saveUser: jest.SpyInstance = jest.spyOn(UserEntity as any, 'Save');
         let updaterUser: UsersUpdateDto = {
             name: 'new_user_name',
             password: 'new_user_password'
@@ -198,13 +198,13 @@ describe('UsersService', () => {
     });
 
     describe('delete user',  ()=>{
-       let Delete = jest.spyOn(UserEntity as any, 'Delete');
+       const Delete = jest.spyOn(UserEntity as any, 'Delete');
        it('should delete user', async ()=>{
            Delete.mockReturnValue(true);
            let temp = await usersService.deleteUser({id: 'user_id'});
            expect(Delete).toBeCalledWith('user_id');
            expect(temp).toEqual({
-              massage: 'success',
+              message: 'success',
               result: true
            });
        });
@@ -213,7 +213,7 @@ describe('UsersService', () => {
           Delete.mockReturnValue(undefined);
           let temp = await usersService.deleteUser({id: 'user_id'});
            expect(temp).toEqual({
-               massage: 'fail',
+               message: 'fail',
                result: false
            });
        });
