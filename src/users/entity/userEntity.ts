@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-
+// мок используется для показа работы в unit-тестов
 export class UserEntity {
     id: string;
     login: string;
